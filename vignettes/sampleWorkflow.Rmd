@@ -1,0 +1,72 @@
+---
+title: 'Example workflow'
+output:
+  html_document:
+    toc: true
+---
+
+
+## Example workflow 
+```{r}
+library(TubercuCost)
+```
+
+## Create our dummy cases averted data 
+```{r}
+casesAvertedTest <- dummyCases() 
+```
+
+## Use the case fatality ratio to create deaths averted 
+```{r}
+deathsAvertedTest <- casesAvertedTest * 0.10 ### extremely crude estimate 
+
+LtbiInitsIncrem <- matrix(0, nrow = nrow(casesAvertedTest), 
+                          ncol = ncol(casesAvertedTest))
+```
+
+will the "real" estimate of case fatality be stratified by age and year? 
+
+## Use these values to estimate the health service costs saved 
+
+Currently, this only the saved costs of averted TB treatment. Should we have some sort of average cost of identifying an individual? Would need to determine the PPV of the intervention in order to calculate such a cost. 
+
+```{r}
+healthServiceCost <- sum(casesAvertedTest * HealthServiceUnitCosts()["TBtx"])
+
+healthServiceCost
+```
+
+```{r}
+### Call the productivity cost function
+productivityCost <- calculateProdCost(TbCases = casesAvertedTest,  
+                                      TbDeaths = deathsAvertedTest, 
+                                      LtbiTxInits = LtbiInitsIncrem,
+                                      discount = 0, 
+                                      Ages="SingleYearAge")
+
+### Print annual productivity costs by age (column) and year of occurrence (row)
+productivityCost$TotalProdCost
+```
+## Estimate the QALYS saved 
+ 
+```{r}
+QALYsGained <- calculateQALYs(TbCases = casesAvertedTest, 
+                              TbDeaths = deathsAvertedTest, 
+                              LtbiTxInits = LtbiInitsIncrem, 
+                              discount = 0)
+
+QALYsGained
+```
+ 
+## finally, calculate the net monetary benefit of intervention
+
+```{r}
+
+### will functionalize this so it gives all relevant ICERs in a list 
+NMB <- -healthServiceCost - sum(productivityCost[[3]]) +  sum(QALYsGained$TotalQaly) * c(100000, 150000, 200000)
+
+NMB 
+```
+ 
+
+
