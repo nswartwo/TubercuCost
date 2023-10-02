@@ -17,16 +17,18 @@ calculateQALYs <- function(TbCases,
   ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
 
   ## Utility weight with LTBI treatment without toxicity
-  TLTBI_UW<-1
+  TLTBI_UW <- 1
   ## Disutility weight with LTBI treatment with toxicity
-  TLTBI_UW_tox<-1-.75
+  TLTBI_UW_tox <- 1-.75
   ## Disutility weight with TB disease and treatment
-  TB_UW<-1-.76
+  TB_UW <- 1-.76
   ## Probability of toxicity during LTBI treatment
-  P_TLTBI_tox<-0.003
+  P_TLTBI_tox <- 0.003
+  # average duration of TB prior to treatment
+  DUR_TB_prTX <- 3/12  #(3 months)
   ## Duration of reduced quality of life with toxicity (two weeks)
-  DUR_TLTBI_tox<-2/52
-  DUR_TB_TX<-.75
+  DUR_TLTBI_tox <- 2/52
+  DUR_TB_TX <-.75
 
   ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
   ## Load in life expectancy values and calculate the life years lost to tb death
@@ -61,7 +63,7 @@ calculateQALYs <- function(TbCases,
     #dis-utility weight*probability*duration*number [...of events]
     TltbiQaly[i,] <- TLTBI_UW_tox*P_TLTBI_tox*DUR_TLTBI_tox*LtbiTxInits[i,]*discountVec[i]
     #dis-utility weight*duration*number [...of event]
-    CaseQaly[i,]  <- TB_UW*DUR_TB_TX*TbCases[i,]*discountVec[i]
+    CaseQaly[i,]  <- (TB_UW * DUR_TB_TX + DUR_TB_prTX) * TbCases[i,] * discountVec[i]
   }
 
   ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### #####

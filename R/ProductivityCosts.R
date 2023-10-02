@@ -19,8 +19,9 @@ calculateProdCost <- function(TbCases,
 TLTBI_clinic<-48.01+28.16 #initial and follow-up clinic visits
 TLTBI_ae<-5.27 #adverse event costs with 3HP or 3HR
 P_TB_hosp<-0.49 #probability of hospitalization with TB
+DUR_TB_prTX <- 3/12 # average duration of TB prior to treatment (3 months)
 DUR_TB_TX_hosp<-24/365 #average duration of hospitalization with TB (24 days)
-DUR_TB_TX_outpatient<-6.8/365 #duration of time loss from outpatient services (6.8 days)
+DUR_TB_TX_outpatient <- 6.8/365 #duration of time loss from outpatient services (6.8 days)
 P_TLTBI_tox <- .003*(tx_dist[1]+tx_dist[2]) #CDC based
 
 ##### Bureau of Labor 2016 to 2020 conversion value
@@ -59,7 +60,7 @@ for (i in 1:nrow(TbCases)){
     #age specific TB treatment initiations*((probability of TB hospitalization*duration of TB hospitalization)+
     #duration of outpatient losses)*annual productivity estimates +
     #age specific TB deaths*lifetime productivity estimates
-    TbProdCost[i,j] <- (TbCases[i,j]*(annual_prod[i,j] - annual_expend[i,j]))*((P_TB_hosp*DUR_TB_TX_hosp)+DUR_TB_TX_outpatient) * discountVec[i]
+    TbProdCost[i,j] <- (TbCases[i,j]*(annual_prod[i,j] - annual_expend[i,j]))*((DUR_TB_prTX + P_TB_hosp*DUR_TB_TX_hosp)+DUR_TB_TX_outpatient) * discountVec[i]
     TbMortCost[i,j] <- (TbDeaths[i,j]*(lifetime_prod[i,j]-lifetime_expend[i,j]))
   }
 }
