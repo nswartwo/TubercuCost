@@ -3,10 +3,15 @@
 #'are all represented in 2020 USD.
 #'
 #'@name HealthServiceUnitCosts
+#'@param uncertainty
 #'@return vector of the default values
 #'@export
 
-HealthServiceUnitCosts <- function(){
+HealthServiceUnitCosts <- function(uncertainty = TRUE,
+                                   seed = 10){
+  set.seed(seed)
+  ## Define the factor for uncertainty calculations
+  uncertaintyFactor <- 0.25
   ## Create an empty vector to hold the values
   DefaultCostsVector <- rep(NA,10)
   names(DefaultCostsVector) <- c('LTBIIdCost','TSTCost','IGRACost','NoTBCost',
@@ -14,9 +19,12 @@ HealthServiceUnitCosts <- function(){
                                  'TBtx')
   ##LTBI Care Cascade Associated Costs
   DefaultCostsVector['LTBIIdCost'] <- 0
-  DefaultCostsVector['TSTCost'] <- 10.12 ### CMS 2021, Physician Fee CPT 86580
-  DefaultCostsVector['IGRACost'] <- 61.98 ### CMS 2021, Clinical Lab Fee CPT 86480
-  DefaultCostsVector['NoTBCost'] <- 34.20 ### CMS 2021, Physician’s Fee CPT 71046
+  ### CMS 2021, 2022 Physician Fee CPT 86580
+  DefaultCostsVector['TSTCost'] <- ifelse(uncertainty == TRUE, rnorm(n = 1, mean = 10.12, sd = 10.12*uncertaintyFactor), 10.12)
+  ### CMS 2021, 2022 Clinical Lab Fee CPT 86480
+  DefaultCostsVector['IGRACost'] <- ifelse(uncertainty == TRUE, rnorm(n = 1, mean = 61.98, sd = 61.98*uncertaintyFactor), 61.98)
+  ### CMS 2021, Physician’s Fee CPT 71046
+  DefaultCostsVector['NoTBCost'] <- ifelse(uncertainty == TRUE, rnorm(n = 1, mean = 34.61, sd = 34.61*uncertaintyFactor), 34.61)
 
 
   ## LTBI Treatment Regimens Costs
@@ -28,17 +36,21 @@ HealthServiceUnitCosts <- function(){
   rifapentineCost <- 14.44 * (900/1200) #rifapentine 1,200 mg, $14.44/dose;
 
   ### 3HP = 3 months of weekly doeses of 900 isoniazid and 900 mg of rifapentine
-  DefaultCostsVector['3HPCost'] <- 12 * (rifapentineCost + 3*isoniazidCost) + 176 + 68 + 34
+  mean3HP <- 557.26; #12 * (rifapentineCost + 3*isoniazidCost) + 176 + 68 + 34
+  DefaultCostsVector['3HPCost'] <- ifelse(uncertainty == TRUE, rnorm(n = 1, mean = mean3HP, sd = mean3HP*uncertaintyFactor), mean3HP) ### EID Publication 2023
   ### 4R = 4 months of daily doses of 600 rifampin
-  DefaultCostsVector['4RCost'] <- 120 * rifampinCost + 203 + 72 + 11
+  mean4R <- 1275.91; #120 * rifampinCost + 203 + 72 + 11
+  DefaultCostsVector['4RCost'] <- ifelse(uncertainty == TRUE, rnorm(n = 1, mean = mean4R, sd = mean4R*uncertaintyFactor), mean4R) ### EID Publication 2023
   ### 3HR = 3 months of daily doses of 300 isoniazid and 600 mg of rifampin
-  DefaultCostsVector['3HRCost'] <- 90 * (rifampinCost + isoniazidCost) + 176 + 68 + 34
-  DefaultCostsVector['3HRCost'] <- 353.61 ### Still 2020
+  mean3HR <- 1054.27; #90 * (rifampinCost + isoniazidCost) + 176 + 68 + 34
+  DefaultCostsVector['3HRCost'] <- ifelse(uncertainty == TRUE, rnorm(n = 1, mean = mean3HR, sd = mean3HR*uncertaintyFactor), mean3HR) ### EID Publication 2023
 
   ## TB Care Cascade Costs
   DefaultCostsVector['TBIdCost'] <- 0
   DefaultCostsVector['TBtest'] <- 0
-  DefaultCostsVector['TBtx'] <- 23060 ### EID Publication in press 2023
+  # DefaultCostsVector['TBtx'] <- ifelse(uncertainty == TRUE, rnorm(n = 1, mean = 23060, sd = 23060*uncertaintyFactor), 23060) ### EID Publication 2023
+  DefaultCostsVector['TBtx'] <- ifelse(uncertainty == TRUE, rnorm(n = 1, mean = 25285, sd = 25285*uncertaintyFactor), 25285) ### EID Publication 2023; includes MDR
+
 
   return(DefaultCostsVector)
 }
