@@ -75,7 +75,7 @@ calculateProdCost <- function(TbCases,
 
   } else if (discount == 0.03){
 
-    discountVec <- read.csv("~/TubercuCost/inst/extdata/DiscountingThreePercentScalars.csv")[1:nrow(TbCases),2]
+    discountVec <- as.vector(unlist(readRDS(system.file("DiscountingThreePercentScalars.rds", package = "TubercuCost"))[1:nrow(TbCases),2]))
     ## annual productivity
     annual_prod <- readRDS(system.file(paste0(USDYear,"/DiscountedAnnualProductivityCosts", Ages, ".rds"), package = "TubercuCost"))
     yearIndex <- which(annual_prod$Year == StartYear) + (0:(nrow(TbDeaths)-1))

@@ -75,8 +75,8 @@ calculateQALYs <- function(TbCases,
       # sum of deaths * age specific life expectancy
       DeathQaly <- TbDeaths*life_exp[,-1]
   } else if (discount == 0.03){
-      discountVec <- read.csv("~/TubercuCost/inst/extdata/DiscountingThreePercentScalars.csv")[1:nrow(TbDeaths),2]
-      ### We will hold life expectancy fixed (no uncertainty)
+    discountVec <- as.vector(unlist(readRDS(system.file("DiscountingThreePercentScalars.rds", package = "TubercuCost"))[1:nrow(TbCases),2]))
+    ### We will hold life expectancy fixed (no uncertainty)
       disc_life_exp <- readRDS(system.file(paste0("DiscountedLifeExpectancy", Ages, ".rds"), package = "TubercuCost"))
       # yearIndex <- which(disc_life_exp$X == 2024) + (0:(nrow(deaths)-1))
       yearIndex <- which(disc_life_exp$Year == StartYear) + (0:(nrow(TbDeaths)-1))

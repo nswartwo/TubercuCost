@@ -39,8 +39,8 @@ calculateHealthCost <- function(TbCases,
         lifetime_healthExpend <- readRDS(system.file(paste0(USDYear, "/LifetimeHealthExpenditure", Ages, population, ".rds"), package = "TubercuCost"))[1:nrow(TbDeaths), ]
       }
   } else if (discount == 0.03){
-      discountVec <- read.csv("~/TubercuCost/inst/extdata/DiscountingThreePercentScalars.csv")[1:nrow(TbCases),2]
-      if (is.null(population)){
+    discountVec <- as.vector(unlist(readRDS(system.file("DiscountingThreePercentScalars.rds", package = "TubercuCost"))[1:nrow(TbCases),2]))
+    if (is.null(population)){
         annual_healthExpend <- readRDS(system.file(paste0(USDYear, "/DiscountedHealthExpenditure", Ages, ".rds"), package = "TubercuCost"))
         yearIndex <- which(rownames(annual_healthExpend) == StartYear) + (0:(nrow(TbDeaths)-1))
         annual_healthExpend <- annual_healthExpend[yearIndex,]
