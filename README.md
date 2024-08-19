@@ -10,9 +10,7 @@ The functions in TubercuCost require a dataframe of:
 * TB deaths
 * LTBI treatment initiations 
 
-by single year of age (0 - 100 years) and year of occurrence (2023 - 2100). If evaluating the effectiveness of a particular intervention, it could be expedient to use dataframes of averted measures.
-
-Support for age groups coming soon! 
+by single year of age (0 - 100 years) OR 10 year age bands (0-4, 5-14, ..., 95+) and year of occurrence (2023 - 2100). If evaluating the effectiveness of a particular intervention, it could be expedient to use dataframes of averted measures.
 
 ### Key function outputs 
 Functions in TubercuCost generate outputs as follows: 
