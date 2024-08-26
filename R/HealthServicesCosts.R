@@ -15,15 +15,16 @@ calculateHealthCost <- function(TbCases,
                                 Ages = "SingleYearAge",
                                 StartYear = 2023,
                                 USDYear = 2022,
-                                uncertainty = TRUE,
+                                uncertainty = FALSE,
                                 seed = 10,
-                                population = NULL){
+                                population = NULL,
+                                UnitCosts = HealthServiceUnitCosts(uncertainty)){
 
   ## Define the factor for uncertainty calculations
   uncertaintyFactor <- 0.25
   set.seed(seed)
 
-  UnitCosts = HealthServiceUnitCosts(uncertainty = uncertainty)
+  # UnitCosts = HealthServiceUnitCosts(uncertainty = uncertainty)
   ## Check for discount and add in appropriate data
   if (discount == 0){
       discountVec <- rep(1, nrow(TbCases))

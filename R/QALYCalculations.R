@@ -1,4 +1,4 @@
-#'Function that will return default values of the program change values.
+#'Function that calculates the QALYs lost
 #'
 #'@name calculateQALYs
 #'@param TbCases
@@ -14,8 +14,10 @@ calculateQALYs <- function(TbCases,
                            uncertainty = TRUE,
                            seed = 10,
                            StartYear = 2023,
-                           popLifeExpRed = 0){
+                           popLifeExpRed = 0,
+                           utilityWeights = c(1, 0.75, 0.75, 0.89)){
 
+  print(utilityWeights)
   ### Check input types
   TbCases <- as.matrix(TbCases)
   TbDeaths <- as.matrix(TbDeaths)
@@ -30,9 +32,9 @@ calculateQALYs <- function(TbCases,
   ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
 
   ## Utility weight with LTBI treatment without toxicity
-  TLTBI_UW <- 1
+  TLTBI_UW <- 1-utilityWeights[1]
   ## Disutility weight with LTBI treatment with toxicity
-  TLTBI_UW_tox <- 1-.75
+  TLTBI_UW_tox <- 1-utilityWeights[2]
   ## utility decrement with TB disease and treatment
   ## Guo, et. al 2008
   # TB_UW <- 1- (ifelse(uncertainty == TRUE,
@@ -40,13 +42,13 @@ calculateQALYs <- function(TbCases,
   #                 0.24))
   ## Bauer, et. al, 2015
   TB_UW_prTX <- 1- (ifelse(uncertainty == TRUE,
-                  rnorm(n=1, mean = .25, sd = 0.08),
-                   0.25))
+                  rnorm(n=1, mean = utilityWeights[3], sd = 0.08),
+                  utilityWeights[3]))
   #### This is for the 2-6 months of treatment
   #### Use preTX for first month
   TB_UW_TX <- 1- (ifelse(uncertainty == TRUE,
-                           rnorm(n=1, mean = .11, sd = 0.09),
-                           0.11))
+                           rnorm(n=1, mean = utilityWeights[4], sd = 0.09),
+                           utilityWeights[4]))
 
   ## Probability of toxicity during LTBI treatment
   P_TLTBI_tox <- 0.003
