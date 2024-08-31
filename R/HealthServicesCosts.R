@@ -70,13 +70,13 @@ calculateHealthCost <- function(TbCases,
 # Each of these costs will be calculated as a weighted average.
 LtbiTestCost <- LtbiTests * ((IGRA_frc*UnitCosts[['IGRACost']]) +
                             ((1-IGRA_frc)*UnitCosts[['TSTCost']]) +
-                            UnitCosts['NoTBCost'])
+                            UnitCosts['NoTBCost']) * discountVec
 
 TltbiCost    <- LtbiTxInits * ((tx_dist[1]*UnitCosts[['3HPCost']]) +
                                (tx_dist[2]*UnitCosts[['4RCost']]) +
-                               (tx_dist[3]*UnitCosts[['3HRCost']]))
+                               (tx_dist[3]*UnitCosts[['3HRCost']])) * discountVec
 
-TltbiHealthCost <- ((LtbiTestCost + TltbiCost) * discountVec)
+TltbiHealthCost <- (LtbiTestCost + TltbiCost)
 
 # HEALTH SERVICES COSTS DUE TO TB DISEASE
 # Number of tests * (cost of those tests + the cost of the regimen)
@@ -87,10 +87,13 @@ TbHealthCost <- TbCases * (UnitCosts[['TBtest']] + UnitCosts[['TBtx']]) * discou
 NonTBHealthExpenditure <- TbDeaths * (lifetime_healthExpend - ((UnitCosts[['TBtest']] + UnitCosts[['TBtx']])* discountVec))
 
 HealthServiceCosts <- list()
-HealthServiceCosts[["Ltbi"]] <- TltbiHealthCost
+HealthServiceCosts[["LtbiTest"]] <- LtbiTestCost
+HealthServiceCosts[["LtbiTx"]] <- TltbiCost
 HealthServiceCosts[["TB"]] <- TbHealthCost
 HealthServiceCosts[["nonTB"]] <- NonTBHealthExpenditure
-HealthServiceCosts[["TotalHealthServiceCosts"]] <- TltbiHealthCost + TbHealthCost - NonTBHealthExpenditure
+HealthServiceCosts[["TotalHealthServiceCosts"]] <- TltbiHealthCost +
+                                                   TbHealthCost -
+                                                   NonTBHealthExpenditure
 
 return(HealthServiceCosts)
 
