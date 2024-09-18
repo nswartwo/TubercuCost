@@ -15,6 +15,7 @@ calculateQALYs <- function(TbCases,
                            seed = 10,
                            StartYear = 2023,
                            popLifeExpRed = 0,
+                           popUtilWgtRed = 1,
                            utilityWeights = c(1, 0.75, 0.75, 0.89)){
 
   print(utilityWeights)
@@ -75,7 +76,7 @@ calculateQALYs <- function(TbCases,
 
       # Calculate death QALYs
       # sum of deaths * age specific life expectancy
-      DeathQaly <- TbDeaths*life_exp[,-1]
+      DeathQaly <- TbDeaths*life_exp[,-1]*popUtilWgtRed
   } else if (discount == 0.03){
     discountVec <- as.vector(unlist(readRDS(system.file("DiscountingThreePercentScalars.rds", package = "TubercuCost"))[1:nrow(TbCases),2]))
     ### We will hold life expectancy fixed (no uncertainty)
@@ -86,7 +87,7 @@ calculateQALYs <- function(TbCases,
 
       # Calculate death QALYs
       # sum of deaths * age specific life expectancy
-      DeathQaly <- TbDeaths*disc_life_exp[, -1]
+      DeathQaly <- TbDeaths*disc_life_exp[, -1]*popUtilWgtRed
   } else {
       print("Current discount level not supported.")
       break()
@@ -105,6 +106,12 @@ calculateQALYs <- function(TbCases,
     #dis-utility weight*duration*number [...of event]
     CaseQaly[i,]  <- ((TB_UW_TX * DUR_TB_TX) + (TB_UW_prTX * DUR_TB_prTX)) * TbCases[i,] * discountVec[i]
   }
+
+
+  # print(paste0("LTBI tests QALY = ", sum(TltbiQaly)))
+  # print(paste0("TB case QALY = ", sum(CaseQaly)))
+  # print(paste0("TB death QALY = ", sum(DeathQaly)))
+
 
   ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
   ## Create a list to hold the individual and total QALYs dataframes
