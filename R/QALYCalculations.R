@@ -57,8 +57,11 @@ calculateQALYs <- function(TbCases,
   DUR_TB_prTX <- ifelse(uncertainty == TRUE,
                         rnorm(n=1, mean = 4/12, sd = (4*uncertaintyFactor)/12),
                         4/12) ### 3 months preTX plus first month of TX
+
   ## Duration of reduced quality of life with toxicity (two weeks)
-  DUR_TLTBI_tox <- 2/52
+  DUR_TLTBI_tox <- ifelse(uncertainty == TRUE,
+                          rnorm(n=1, mean = 2/52, sd = (2*uncertaintyFactor)/52),
+                          2/52)
   DUR_TB_TX <- ifelse(uncertainty == TRUE,
                       rnorm(n=1, mean = 8/12, sd = (8*uncertaintyFactor)/12),
                       8/12) ### latter 8 Months
