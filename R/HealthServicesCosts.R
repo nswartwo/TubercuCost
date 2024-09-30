@@ -72,9 +72,15 @@ LtbiTestCost <- LtbiTests * ((IGRA_frc*UnitCosts[['IGRACost']]) +
                             ((1-IGRA_frc)*UnitCosts[['TSTCost']]) +
                             UnitCosts['NoTBCost']) * discountVec
 
+# print(paste0("LTBI tests = ", sum(LtbiTests)))
+# print(paste0("LTBI test costs = ", sum(LtbiTestCost)))
+
 TltbiCost    <- LtbiTxInits * ((tx_dist[1]*UnitCosts[['3HPCost']]) +
                                (tx_dist[2]*UnitCosts[['4RCost']]) +
                                (tx_dist[3]*UnitCosts[['3HRCost']])) * discountVec
+
+# print(paste0("LTBI treat inits = ", sum(LtbiTxInits)))
+# print(paste0("LTBI treat costs = ", sum(TltbiCost)))
 
 TltbiHealthCost <- (LtbiTestCost + TltbiCost)
 
@@ -82,6 +88,9 @@ TltbiHealthCost <- (LtbiTestCost + TltbiCost)
 # Number of tests * (cost of those tests + the cost of the regimen)
 # TbHealthCost <- (rowSums(TbCases * (UnitCosts[['TBtest']] + UnitCosts[['TBtx']])) * discountVec)
 TbHealthCost <- TbCases * (UnitCosts[['TBtest']] + UnitCosts[['TBtx']]) * discountVec
+
+# print(paste0("TB cases = ", sum(TbCases)))
+# print(paste0("TB cases costs = ", sum(TbHealthCost)))
 
 # nonTB healthcare expenditures
 NonTBHealthExpenditure <- TbDeaths * (lifetime_healthExpend - ((UnitCosts[['TBtest']] + UnitCosts[['TBtx']])* discountVec))
